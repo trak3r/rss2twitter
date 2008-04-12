@@ -3,7 +3,6 @@
 # TODO:
 # - work with HTTPS
 # - check for db file existence so you don't have to comment-out code
-# - load target information from a YAML file or take as a constructor
 # - convert into gem
 # - publish to GitHub
 
@@ -40,11 +39,15 @@ end
 
 missing_or_empty_yaml(yaml_file_name) unless prefs
 
-raise "Please define \"path_to_sqlite_db\" in your YAML file." unless prefs['path_to_sqlite_db']
-raise "Please define \"twitter_email\" in your YAML file." unless prefs['twitter_email']
-raise "Please define \"twitter_password\" in your YAML file." unless prefs['twitter_password']
-raise "Please define \"rss_url\" in your YAML file." unless prefs['rss_url']
-raise "Please define \"rss_user_agent\" in your YAML file." unless prefs['rss_user_agent']
+def yamlized(prefs,token)
+  raise "Please define \"#{token}\" in your YAML file." unless prefs["#{token}"]    
+end
+
+path_to_sqlite_db = yamlized(prefs,'path_to_sqlite_db')
+twitter_email = yamlized(prefs,'twitter_email')
+twitter_password = yamlized(prefs,'twitter_password')
+rss_url = yamlized(prefs,'rss_url')
+rss_user_agent = yamlized(prefs,'rss_user_agent')
 
 raise "STOP!  (I wanna go home...)"
 
