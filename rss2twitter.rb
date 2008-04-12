@@ -53,17 +53,6 @@ twitter_password = yamlized(prefs,'twitter_password')
 rss_url = yamlized(prefs,'rss_url')
 rss_user_agent = yamlized(prefs,'rss_user_agent')
 
-unless File.exist?(path_to_sqlite_db) 
-  print <<"EOF"
-  
-  Please create the SQLite database file you specified in the YAML:
-  
-  sqlite #{path_to_sqlite_db}
-  
-EOF
-  exit
-end
-
 ActiveRecord::Base.logger = Logger.new(STDERR)
 ActiveRecord::Base.colorize_logging = false
 
@@ -72,18 +61,18 @@ ActiveRecord::Base.establish_connection(
     :dbfile  => path_to_sqlite_db
 )
 
-#uncomment this section the first time to create the table
-#
-#ActiveRecord::Schema.define do
-#    create_table :item do |table|
-#        table.column :title, :string
-#        table.column :link, :string
-#    end
-#end
-
 class Item < ActiveRecord::Base
   def to_s
     "#{self.title[0..(130-self.link.length)]} - #{self.link}"
+  end
+end
+
+unless Item.table_exists?
+  ActiveRecord::Schema.define do
+    create_table :items do |table|
+        table.column :title, :string
+        table.column :link, :string
+    end
   end
 end
 
