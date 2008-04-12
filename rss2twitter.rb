@@ -26,7 +26,7 @@ def missing_or_empty_yaml(yaml_file_name)
     path_to_sqlite_db: '/PATH/TO/db.sqlite'
     twitter_email: 'yourtwitteremail@bla.com'
     twitter_password: 'secret'
-    rss_url: 'http://yoursite.com/index.xml'
+    rss_url: 'https://username:password@yoursite.com/index.xml'
     rss_user_agent: 'http://twitter.com/yourbot'
 
 EOF
@@ -93,8 +93,7 @@ for item in rss_items.items
     unless existing_item = Item.find(:all, :conditions => ["link=?", item.link]).first
       twitter ||= Twitter::Base.new(twitter_email, twitter_password)
       new_item = Item.create(:title => item.title, :link => item.link) 
-#      twitter.post(new_item.to_s)
-      print new_item.to_s
+      twitter.post(new_item.to_s)
     end
   end
 end
