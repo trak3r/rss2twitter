@@ -1,4 +1,5 @@
 # borrowed from http://snippets.dzone.com/posts/show/3714
+# heavily modified (and improved I hope) by Ted (rss2twitter@rudiment.net)
 #
 # TODO:
 # - convert into gem
@@ -80,7 +81,7 @@ end
 #run the beast
 parsed_uri = URI.parse(rss_url)
 http = Net::HTTP.new(parsed_uri.host, parsed_uri.port)
-http.use_ssl = true
+http.use_ssl = 'https' == parsed_uri.scheme
 request = Net::HTTP::Get.new(parsed_uri.path)
 request.basic_auth parsed_uri.user, parsed_uri.password
 response = http.request(request)
@@ -93,6 +94,7 @@ for item in rss_items.items
       twitter ||= Twitter::Base.new(twitter_email, twitter_password)
       new_item = Item.create(:title => item.title, :link => item.link) 
 #      twitter.post(new_item.to_s)
+      print new_item.to_s
     end
   end
 end
