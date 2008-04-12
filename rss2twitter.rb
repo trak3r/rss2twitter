@@ -1,13 +1,14 @@
 # borrowed from http://snippets.dzone.com/posts/show/3714
 #
 # TODO:
-# - work with HTTPS
 # - convert into gem
 # - publish to GitHub
 
 require 'rubygems'
 require 'active_record'
 require 'ftools'
+require 'net/http'
+require 'net/https'
 require 'open-uri'
 require 'simple-rss'
 require 'twitter'
@@ -77,14 +78,21 @@ unless Item.table_exists?
 end
 
 #run the beast
-rss_items = SimpleRSS.parse open(rss_url ,"User-Agent" => rss_user_agent)
+parsed_uri = URI.parse(rss_url)
+http = Net::HTTP.new(parsed_uri.host, parsed_uri.port)
+http.use_ssl = true
+request = Net::HTTP::Get.new(parsed_uri.path)
+request.basic_auth parsed_uri.user, parsed_uri.password
+response = http.request(request)
+
+rss_items = SimpleRSS.parse response.body
 
 for item in rss_items.items
   Item.transaction do
     unless existing_item = Item.find(:all, :conditions => ["link=?", item.link]).first
       twitter ||= Twitter::Base.new(twitter_email, twitter_password)
       new_item = Item.create(:title => item.title, :link => item.link) 
-      twitter.post(new_item.to_s)
+#      twitter.post(new_item.to_s)
     end
   end
 end
