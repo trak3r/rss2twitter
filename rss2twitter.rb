@@ -12,18 +12,41 @@ require 'active_record'
 require 'simple-rss'
 require 'open-uri'
 require 'twitter'
+require 'yaml'
 
-#twitter account to post to
-twitter_email = "yourtwitteremail@bla.com"
-twitter_password = "secret"
+yaml_file_name = 'rss2twitter.yml'
 
-#rss feed to post
-rss_url = "http://yoursite.com/index.xml"
-rss_user_agent = "http://twitter.com/yourbot"
+def missing_or_empty_yaml(yaml_file_name)
+  print <<"EOF"
 
-#sqlite db
-path_to_sqlite_db = "/PATH/TO/db.sqlite"
+  Please define a YAML file named #{yaml_file_name}
+  containing the following values:
 
+    path_to_sqlite_db: '/PATH/TO/db.sqlite'
+    twitter_email: 'yourtwitteremail@bla.com'
+    twitter_password: 'secret'
+    rss_url: 'http://yoursite.com/index.xml'
+    rss_user_agent: 'http://twitter.com/yourbot'
+
+EOF
+  exit
+end
+
+begin
+  prefs = YAML::load_file("#{yaml_file_name}")
+rescue
+  missing_or_empty_yaml yaml_file_name
+end
+
+missing_or_empty_yaml(yaml_file_name) unless prefs
+
+raise "Please define \"path_to_sqlite_db\" in your YAML file." unless prefs['path_to_sqlite_db']
+raise "Please define \"twitter_email\" in your YAML file." unless prefs['twitter_email']
+raise "Please define \"twitter_password\" in your YAML file." unless prefs['twitter_password']
+raise "Please define \"rss_url\" in your YAML file." unless prefs['rss_url']
+raise "Please define \"rss_user_agent\" in your YAML file." unless prefs['rss_user_agent']
+
+raise "STOP!  (I wanna go home...)"
 
 ActiveRecord::Base.logger = Logger.new(STDERR)
 ActiveRecord::Base.colorize_logging = false
