@@ -2,14 +2,14 @@
 #
 # TODO:
 # - work with HTTPS
-# - check for db file existence so you don't have to comment-out code
 # - convert into gem
 # - publish to GitHub
 
 require 'rubygems'
 require 'active_record'
-require 'simple-rss'
+require 'ftools'
 require 'open-uri'
+require 'simple-rss'
 require 'twitter'
 require 'yaml'
 
@@ -40,7 +40,11 @@ end
 missing_or_empty_yaml(yaml_file_name) unless prefs
 
 def yamlized(prefs,token)
-  raise "Please define \"#{token}\" in your YAML file." unless prefs["#{token}"]    
+  if prefs["#{token}"]
+    return prefs["#{token}"]
+  else
+    raise "Please define \"#{token}\" in your YAML file."    
+  end
 end
 
 path_to_sqlite_db = yamlized(prefs,'path_to_sqlite_db')
@@ -49,7 +53,16 @@ twitter_password = yamlized(prefs,'twitter_password')
 rss_url = yamlized(prefs,'rss_url')
 rss_user_agent = yamlized(prefs,'rss_user_agent')
 
-raise "STOP!  (I wanna go home...)"
+unless File.exist?(path_to_sqlite_db) 
+  print <<"EOF"
+  
+  Please create the SQLite database file you specified in the YAML:
+  
+  sqlite #{path_to_sqlite_db}
+  
+EOF
+  exit
+end
 
 ActiveRecord::Base.logger = Logger.new(STDERR)
 ActiveRecord::Base.colorize_logging = false
