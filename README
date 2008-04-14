@@ -6,4 +6,6 @@ TODO:
 
 - Reverse the order of feed insertions (they are chronologically backwards now)
 
+- Support multiple feeds; perhaps let the script support commands like "rss2twitter add <feed>" and "rss2twitter remove <feed>" and "rss2twitter list" etc.
+
 - Integrate with TinyURL so less description verbiage is truncated
