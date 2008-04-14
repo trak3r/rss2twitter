@@ -1,0 +1,9 @@
+Run "ruby rss2twtter.rb" and follow the directions.
+
+TODO:
+
+- Make the set-up interactive so you don't have to create a YAML file; perhaps store settings in the database
+
+- Reverse the order of feed insertions (they are chronologically backwards now)
+
+- Integrate with TinyURL so less description verbiage is truncated
