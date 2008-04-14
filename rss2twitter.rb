@@ -88,7 +88,7 @@ response = http.request(request)
 
 rss_items = SimpleRSS.parse response.body
 
-for item in rss_items.items
+for item in rss_items.items.reverse
   Item.transaction do
     unless existing_item = Item.find(:all, :conditions => ["link=?", item.link]).first
       twitter ||= Twitter::Base.new(twitter_email, twitter_password)
