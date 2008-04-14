@@ -5,5 +5,3 @@ TODO:
 - Make the set-up interactive so you don't have to create a YAML file; perhaps store settings in the database
 
 - Support multiple feeds; perhaps let the script support commands like "rss2twitter add <feed>" and "rss2twitter remove <feed>" and "rss2twitter list" etc.
-
-- Integrate with TinyURL so less description verbiage is truncated

@@ -11,6 +11,7 @@ require 'ftools'
 require 'net/http'
 require 'net/https'
 require 'open-uri'
+require 'shorturl'
 require 'simple-rss'
 require 'twitter'
 require 'yaml'
@@ -64,8 +65,12 @@ ActiveRecord::Base.establish_connection(
 )
 
 class Item < ActiveRecord::Base
+  def minilink
+    @mini ||= ShortURL.shorten(self.link, :tinyurl)
+  end
+  
   def to_s
-    "#{self.title[0..(130-self.link.length)]} - #{self.link}"
+    "#{self.title[0..(130-self.minilink.length)]} - #{self.minilink}"
   end
 end
 
