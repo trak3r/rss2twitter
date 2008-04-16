@@ -102,11 +102,7 @@ for item in rss_items.items.reverse
     unless existing_item = Item.find(:all, :conditions => ["link=?", item.link]).first
       twitter ||= Twitter::Base.new(twitter_email, twitter_password)
       new_item = Item.create(:title => item.title, :link => item.link) 
-#      twitter.post(new_item.to_s)
-print new_item.to_s.length
-print ">"
-print new_item.to_s
-print "\n"
+      twitter.post(new_item.to_s)
     end
   end
 end
