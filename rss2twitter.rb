@@ -65,12 +65,16 @@ ActiveRecord::Base.establish_connection(
 )
 
 class Item < ActiveRecord::Base
-  def minilink
-    @mini ||= ShortURL.shorten(self.link, :tinyurl)
+  def tweet_limit
+    139 # leave one off for fudging
+  end
+
+  def short_url
+    @cached_short_url ||= ShortURL.shorten(self.link, :tinyurl)
   end
   
   def to_s
-    "#{self.title[0..(130-self.minilink.length)]} - #{self.minilink}"
+    "#{self.title[0..(tweet_limit-self.short_url.length)]} #{self.short_url}"
   end
 end
 
@@ -98,7 +102,11 @@ for item in rss_items.items.reverse
     unless existing_item = Item.find(:all, :conditions => ["link=?", item.link]).first
       twitter ||= Twitter::Base.new(twitter_email, twitter_password)
       new_item = Item.create(:title => item.title, :link => item.link) 
-      twitter.post(new_item.to_s)
+#      twitter.post(new_item.to_s)
+print new_item.to_s.length
+print ">"
+print new_item.to_s
+print "\n"
     end
   end
 end
