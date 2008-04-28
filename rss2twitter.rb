@@ -1,110 +1,19 @@
-# borrowed from http://snippets.dzone.com/posts/show/3714
+# original logic borrowed from http://snippets.dzone.com/posts/show/3714
 # heavily modified (and improved I hope) by Ted (rss2twitter@rudiment.net)
-#
-# TODO:
-# - convert into gem
-# - publish to GitHub
 
 require 'rubygems'
-require 'active_record'
-require 'ftools'
-require 'net/http'
-require 'net/https'
-require 'open-uri'
-require 'shorturl'
-require 'simple-rss'
 require 'twitter'
-require 'yaml'
 
-yaml_file_name = 'rss2twitter.yml'
+require 'config'
+require 'database'
+require 'feed'
 
-def missing_or_empty_yaml(yaml_file_name)
-  print <<"EOF"
+settings = Settings.new
 
-  Please define a YAML file named #{yaml_file_name}
-  containing the following values:
-
-    path_to_sqlite_db: '/PATH/TO/db.sqlite'
-    twitter_email: 'yourtwitteremail@bla.com'
-    twitter_password: 'secret'
-    rss_url: 'https://username:password@yoursite.com/index.xml'
-    rss_user_agent: 'http://twitter.com/yourbot'
-
-EOF
-  exit
-end
-
-begin
-  prefs = YAML::load_file("#{yaml_file_name}")
-rescue
-  missing_or_empty_yaml yaml_file_name
-end
-
-missing_or_empty_yaml(yaml_file_name) unless prefs
-
-def yamlized(prefs,token)
-  if prefs["#{token}"]
-    return prefs["#{token}"]
-  else
-    raise "Please define \"#{token}\" in your YAML file."    
-  end
-end
-
-path_to_sqlite_db = yamlized(prefs,'path_to_sqlite_db')
-twitter_email = yamlized(prefs,'twitter_email')
-twitter_password = yamlized(prefs,'twitter_password')
-rss_url = yamlized(prefs,'rss_url')
-rss_user_agent = yamlized(prefs,'rss_user_agent')
-
-ActiveRecord::Base.logger = Logger.new(STDERR)
-ActiveRecord::Base.colorize_logging = false
-
-ActiveRecord::Base.establish_connection(
-    :adapter => "sqlite3",
-    :dbfile  => path_to_sqlite_db
-)
-
-class Item < ActiveRecord::Base
-  def tweet_limit
-    139 # leave one off for fudging
-  end
-
-  def short_url
-    @cached_short_url ||= ShortURL.shorten(self.link, :tinyurl)
-  end
-  
-  def munged_title
-    @cached_munged_title ||= sprintf( "%s %s", *self.title.scan( /^Changeset \[(.*?)\]\: (.*)/ ).flatten )
-  end
-  
-  def to_s
-    "#{self.munged_title[0..(tweet_limit-self.short_url.length)]} #{self.short_url}"
-  end
-end
-
-unless Item.table_exists?
-  ActiveRecord::Schema.define do
-    create_table :items do |table|
-        table.column :title, :string
-        table.column :link, :string
-    end
-  end
-end
-
-#run the beast
-parsed_uri = URI.parse(rss_url)
-http = Net::HTTP.new(parsed_uri.host, parsed_uri.port)
-http.use_ssl = 'https' == parsed_uri.scheme
-request = Net::HTTP::Get.new("#{parsed_uri.path}?#{parsed_uri.query}")
-request.basic_auth parsed_uri.user, parsed_uri.password
-response = http.request(request)
-
-rss_items = SimpleRSS.parse response.body
-
-for item in rss_items.items.reverse
+for item in process(settings.rss_url)
   Item.transaction do
     unless existing_item = Item.find(:all, :conditions => ["link=?", item.link]).first
-      twitter ||= Twitter::Base.new(twitter_email, twitter_password)
+      twitter ||= Twitter::Base.new(settings.twitter_email, settings.twitter_password)
       new_item = Item.create(:title => item.title, :link => item.link) 
       twitter.post(new_item.to_s)
     end
