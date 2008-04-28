@@ -73,8 +73,12 @@ class Item < ActiveRecord::Base
     @cached_short_url ||= ShortURL.shorten(self.link, :tinyurl)
   end
   
+  def munged_title
+    @cached_munged_title ||= sprintf( "%s %s", *self.title.scan( /^Changeset \[(.*?)\]\: (.*)/ ).flatten )
+  end
+  
   def to_s
-    "#{self.title[0..(tweet_limit-self.short_url.length)]} #{self.short_url}"
+    "#{self.munged_title[0..(tweet_limit-self.short_url.length)]} #{self.short_url}"
   end
 end
 
