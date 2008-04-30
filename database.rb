@@ -18,7 +18,7 @@ class Item < ActiveRecord::Base
   protected 
   
   def tweet_limit
-    139 # leave one off for fudging
+    138 # leave one off for fudging
   end
 
   def short_url
@@ -30,7 +30,7 @@ class Item < ActiveRecord::Base
     # extraneous verbiage to save every last precious character
     tidbits = self.title.scan( /^Changeset \[(.*?)\]\: (.*)/ ).flatten
     if 2 == tidbits.length
-      return sprintf( "%s %s", *tidbits ) 
+      return tidbits[1] # sprintf( "%s %s", *tidbits ) 
     else # not a Trac changeset or we failed to parse it
       return self.title
     end
