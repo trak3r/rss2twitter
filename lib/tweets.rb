@@ -1,9 +1,9 @@
 require 'rubygems'
 require 'twitter'
 
-require 'config'
-require 'database'
-require 'feed'
+require 'lib/config'
+require 'lib/database'
+require 'lib/feed'
 
 def parse_and_push
   settings = Settings.new
