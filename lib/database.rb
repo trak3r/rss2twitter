@@ -22,7 +22,7 @@ class Item < ActiveRecord::Base
   end
 
   def short_url
-    @cached_short_url ||= ShortURL.shorten(self.link, :metamark)
+    @cached_short_url ||= ShortURL.shorten(self.link, :fyad)
   end
   
   def optimized_title
