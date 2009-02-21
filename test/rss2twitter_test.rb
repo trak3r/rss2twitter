@@ -1,10 +1,8 @@
 require File.dirname(__FILE__) + '/test_helper'
-require 'rubygems'
-require 'shorturl'
 
 class Rss2twitterTest < Test::Unit::TestCase
 
-  test "truncation" do
+  def test_truncation
     max = 140 # message limit for twitter
 
     for x in 1..max do
@@ -16,7 +14,7 @@ class Rss2twitterTest < Test::Unit::TestCase
     printf "%s", msg[0..max]
   end
 
-  test "shorturl services" do
+  def test_shorturl_services
     [ 'rubyurl',
       'tinyurl',
       'shorl',
