@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rss2twitter}
-  s.version = "0.9.1"
+  s.version = "0.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Thomas 'Ted' Davis"]
@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.description = %q{Read an RSS feed and tweet each item.}
   s.email = %q{rss2twitter@rudiment.net}
   s.executables = ["rss2twitter"]
-  s.files = ["bin/rss2twitter", "lib/database.rb", "lib/item.rb", "lib/rss2twitter.rb", "test/rss2twitter_test.rb", "test/test_helper.rb"]
+  s.files = ["VERSION.yml", "bin/rss2twitter", "lib/database.rb", "lib/item.rb", "lib/rss2twitter.rb", "test/rss2twitter_test.rb", "test/test_helper.rb"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/trak3r/rss2twitter}
   s.rdoc_options = ["--inline-source", "--charset=UTF-8"]
