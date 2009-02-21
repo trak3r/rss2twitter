@@ -1,17 +1,1 @@
-CREDITS:
-
-	Original logic borrowed from http://snippets.dzone.com/posts/show/3714
-
-	Heavily modified (and improved I hope) by Ted (rss2twitter@rudiment.net)
-
-HOWTO:
-	
-	Run "ruby rss2twitter.rb" and follow the directions.
-
-TODO:
-
-	- Switch to http://is.gd to save even MORE precious characters!
-
-	- Make the set-up interactive so you don't have to create a YAML file; perhaps store settings in the database
-
-	- Support multiple feeds; perhaps let the script support commands like "rss2twitter add <feed>" and "rss2twitter remove <feed>" and "rss2twitter list" etc.
+Run "rss2twitter" and follow the directions.
