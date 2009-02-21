@@ -5,6 +5,7 @@ require 'net/https'
 require 'open-uri'
 require 'simple-rss'
 
+require 'lib/database'
 require 'lib/item'
 
 class RSS2Twitter

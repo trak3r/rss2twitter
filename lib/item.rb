@@ -1,17 +1,19 @@
-require 'lib/database'
 require 'shorturl'
-
-unless Item.table_exists?
-  ActiveRecord::Schema.define do
-    create_table :items do |table|
-      table.column :title, :string
-      table.column :link, :string
-    end
-  end
-end
+require 'active_record'
 
 class Item < ActiveRecord::Base
 
+  def initialize
+    unless Item.table_exists?
+      ActiveRecord::Schema.define do
+        create_table :items do |table|
+          table.column :title, :string
+          table.column :link, :string
+        end
+      end
+    end
+  end
+  
   def to_s
     "#{self.optimized_title[0..(tweet_limit-self.short_url.length)]} #{self.short_url}"
   end
