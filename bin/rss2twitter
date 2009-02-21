@@ -1,0 +1,3 @@
+#!/opt/local/bin/ruby
+require 'lib/rss2twitter'
+RSS2Twitter.new(feed, screen_name, password).parse_and_push
