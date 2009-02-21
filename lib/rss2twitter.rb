@@ -23,8 +23,7 @@ class RSS2Twitter
         unless Item.find(:all, :conditions => ["link=?", item.link]).first
           twitter ||= Twitter::Base.new(@screen_name, @password)
           new_item = Item.create(:title => item.title, :link => item.link)
-          #twitter.post(new_item.to_s)
-          puts new_item.to_s
+          twitter.post(new_item.to_s)
         end
       end
     end
