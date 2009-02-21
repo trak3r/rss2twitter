@@ -1,5 +1,6 @@
-#!/opt/local/bin/ruby
+#!/usr/bin/ruby
 if 3 == ARGV.length
+  require 'rubygems'
   require 'lib/rss2twitter'
   RSS2Twitter.new(ARGV[0], ARGV[1], ARGV[2]).parse_and_push
 else
